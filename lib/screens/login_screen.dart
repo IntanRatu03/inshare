@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:inshare_uas/register.dart'; // Pastikan import file register.dart
+import 'package:inshare_uas/screens/register_screen.dart'; // Pastikan import file register.dart
+import 'package:inshare_uas/screens/home_page_screen.dart';
 
 class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,18 +17,14 @@ class LoginScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Logo
-                Text(
-                  'INSHARE',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                    fontFamily: 'Roboto',
-                  ),
+                Image.asset(
+                  'assets/images/Insharelogo.png', // Path gambar
+                  width: 120, // Sesuaikan ukuran logo
+                  height: 120,
                 ),
                 const SizedBox(height: 8),
                 // Subtitle
-                Text(
+                const Text(
                   'Welcome back to Inshare!',
                   style: TextStyle(
                     fontSize: 18,
@@ -61,7 +60,7 @@ class LoginScreen extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    suffixIcon: Icon(Icons.visibility),
+                    suffixIcon: const Icon(Icons.visibility),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -71,7 +70,14 @@ class LoginScreen extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Action saat tombol login ditekan
+                      // Navigasi ke halaman Profile
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              HomePage(), // Panggil halaman profil
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -80,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       backgroundColor: Colors.blue,
                     ),
-                    child: Text(
+                    child: const Text(
                       'Login',
                       style: TextStyle(fontSize: 16),
                     ),
@@ -99,7 +105,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'Register',
                     style: TextStyle(
                       color: Colors.blue,

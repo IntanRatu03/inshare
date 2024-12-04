@@ -1,7 +1,67 @@
 import 'package:flutter/material.dart';
-import 'login.dart'; // Pastikan ini merujuk ke file login.dart yang kamu punya
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'login_screen.dart'; // Import file login.dart
+import 'profil_screen.dart'; // Import file profile.dart (baru)
 
 class RegisterScreen extends StatelessWidget {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+
+  final String baseUrl = "https://6ffa-180-243-105-155.ngrok-free.app/";
+
+  RegisterScreen({super.key}); // URL Ngrok
+
+  Future<void> _registerUser(BuildContext context) async {
+    final username = usernameController.text;
+    final password = passwordController.text;
+    final phone = phoneController.text;
+    final email = emailController.text;
+
+    if (username.isEmpty || password.isEmpty || phone.isEmpty || email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill all fields!")),
+      );
+      return;
+    }
+
+    final url = Uri.parse('$baseUrl/register'); // Endpoint Laravel
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "username": username,
+          "password": password,
+          "phone": phone,
+          "email": email,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Registration successful!")),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ProfileScreen()),
+        );
+      } else {
+        final error = jsonDecode(response.body)['message'] ?? "Unknown error";
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $error")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Failed to connect to server.")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,19 +73,14 @@ class RegisterScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Logo
-                Text(
-                  'INSHARE',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                    fontFamily: 'Roboto', // Atur font jika ingin
-                  ),
+                // Ganti logo teks menjadi gambar
+                Image.asset(
+                  'assets/images/Insharelogo.png',
+                  width: 120,
+                  height: 120,
                 ),
                 const SizedBox(height: 8),
-                // Subtitle
-                Text(
+                const Text(
                   'Join Inshare Today!',
                   style: TextStyle(
                     fontSize: 18,
@@ -39,9 +94,8 @@ class RegisterScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-
-                // Username Field
                 TextField(
+                  controller: usernameController,
                   decoration: InputDecoration(
                     labelText: 'Username',
                     hintText: 'Enter username',
@@ -51,9 +105,8 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Password Field
                 TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -61,13 +114,12 @@ class RegisterScreen extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    suffixIcon: Icon(Icons.visibility),
+                    suffixIcon: const Icon(Icons.visibility),
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Phone Number Field
                 TextField(
+                  controller: phoneController,
                   decoration: InputDecoration(
                     labelText: 'Phone Number',
                     hintText: 'Enter phone number',
@@ -77,9 +129,8 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Email Field
                 TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     hintText: 'Enter email',
@@ -89,14 +140,10 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // Create Account Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Action saat tombol ditekan
-                    },
+                    onPressed: () => _registerUser(context),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
@@ -104,24 +151,21 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       backgroundColor: Colors.blue,
                     ),
-                    child: Text(
+                    child: const Text(
                       'Create Account',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Login Instead Button
                 TextButton(
                   onPressed: () {
-                    // Navigasi ke layar login
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'Login Instead',
                     style: TextStyle(
                       color: Colors.blue,

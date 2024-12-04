@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:inshare_uas/profil.dart';
+import 'package:inshare_uas/screens/login_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ProfileScreen(),
+      home:LoginScreen(),
     );
   }
 }
-

@@ -1,39 +1,73 @@
 import 'package:flutter/material.dart';
-import 'editprofil.dart'; // Pastikan Anda sudah menambahkan file editprofil.dart pada folder proyek Anda.
+import 'package:inshare_uas/screens/home_page_screen.dart';
+import 'editprofil_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'login_screen.dart';
+import 'explore_screen.dart';
+import 'new_post_page_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  int _currentIndex = 3; // Inisialisasi currentIndex
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Nanad_manda',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+        automaticallyImplyLeading: false,
+        centerTitle: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Nanad_manda',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // Navigasi ke LoginScreen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              child: const PhosphorIcon(
+                PhosphorIconsRegular.signOut,
+                color: Colors.black,
+              ),
+            ),
+          ],
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+               padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
               child: Column(
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       // Profile Image
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(
-                          'https://via.placeholder.com/150', // Ganti dengan URL gambar profil Anda
+                        backgroundImage: AssetImage(
+                          'assets/images/dummy_post1.jpg',
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16),
                       // Stats
                       Expanded(
                         child: Row(
@@ -49,7 +83,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   // Name and Bio
-                  Align(
+                  const Align(
                     alignment: Alignment.centerLeft,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,12 +95,12 @@ class ProfileScreen extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
                           '@Nanad_manda',
                           style: TextStyle(color: Colors.grey),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text('Ikan apa yang suka jalan-jalan?'),
                       ],
                     ),
@@ -85,10 +119,10 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Text('Edit Profile'),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.blue),
+                        side: const BorderSide(color: Colors.blue),
                       ),
+                      child: Text('Edit Profile'),
                     ),
                   ),
                 ],
@@ -96,13 +130,13 @@ class ProfileScreen extends StatelessWidget {
             ),
             const Divider(thickness: 1),
             // Tabs (Posts)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              const Padding(
+              padding:  EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.grid_on, color: Colors.black),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Text(
                     'Posts',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -116,8 +150,8 @@ class ProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
@@ -126,9 +160,9 @@ class ProfileScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Container(
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          'https://via.placeholder.com/150', // Ganti dengan URL gambar postingan Anda
+                      image: const DecorationImage(
+                        image: AssetImage(
+                          'assets/images/dummy_post2.jpg', // Ganti dengan URL gambar postingan Anda
                         ),
                         fit: BoxFit.cover,
                       ),
@@ -142,30 +176,90 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          if (index == 2) {
+            // New Post
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const NewPostPage()),
+            );
+          } else if (index == 1) {
+            // Explore
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ExploreScreen()),
+            );
+          } else if (index == 0) {
+            // Navigasi ke halaman Beranda ketika ikon beranda ditekan
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()), // Ganti dengan halaman beranda yang benar
+            );
+          }
+        },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: PhosphorIcon(
+                _currentIndex == 0
+                    ? PhosphorIconsBold.house
+                    : PhosphorIconsRegular.house,
+                size: 32,
+                color: Colors.black,
+              ),
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: PhosphorIcon(
+                _currentIndex == 1
+                    ? PhosphorIconsBold.magnifyingGlass
+                    : PhosphorIconsRegular.magnifyingGlass,
+                size: 32,
+                color: Colors.black,
+              ),
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_box_outlined),
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: PhosphorIcon(
+                _currentIndex == 2
+                    ? PhosphorIconsBold.plusSquare
+                    : PhosphorIconsRegular.plusSquare,
+                size: 32,
+                color: Colors.black,
+              ),
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: PhosphorIcon(
+                _currentIndex == 3
+                    ? PhosphorIconsBold.userCircle
+                    : PhosphorIconsRegular.userCircle,
+                size: 32,
+                color: Colors.black,
+              ),
+            ),
             label: '',
           ),
         ],
-        currentIndex: 3, // Set current index ke 'Profile'
         selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          // Handle navigasi
-        },
+        unselectedItemColor: Colors.black54,
+        iconSize: 32,
       ),
     );
   }
